@@ -67,19 +67,17 @@ def get_authenticated_service(args):
 def get_subscription(youtube, channel_id):
   get_subscription_response = youtube.subscriptions().list(
     part='subscriberSnippet',
-    body=dict(
-      snippet=dict(
-        resourceId=dict(
-          channelId=channel_id
-        )
+    mySubscribers = 'true',
+    onBehalfOfContentOwner = 'alADLxSVTEMmJIBnFAIfZw'
+    onBehalfOfContentOwnerChannel = channel_id
       )
     )).execute()
 
   return get_subscription_response["subscriberSnippet"]["title"]
 
 if __name__ == "__main__":
-  argparser.add_argument("--channel-id", help="ID of the channel to subscribe to.",
-    default="UCtVd0c0tGXuTSbU5d8cSBUg")
+  argparser.add_argument("--channel-id", help="ID of the channel whose Subs are required",
+    default="UC1sAQpHqHy4SV6ZSu98xGmg")
   args = argparser.parse_args()
 
   youtube = get_authenticated_service(args)
