@@ -44,7 +44,7 @@ with information from the {{ Cloud Console }}
 
 For more information about the client_secrets.json file format, please visit:
 https://developers.google.com/api-client-library/python/guide/aaa_client_secrets
-""" % os.path.abspath(os.path.join(os.path.dirname(__file__),
+""" % os.path.abspath(os.path.join(os.path.dirname('__file__'),
                                    CLIENT_SECRETS_FILE))
 
 def get_authenticated_service(args):
@@ -64,9 +64,9 @@ def get_authenticated_service(args):
 
 # This method calls the API's youtube.subscriptions.insert method to add a
 # subscription to the specified channel.
-def add_subscription(youtube, channel_id):
-  add_subscription_response = youtube.subscriptions().insert(
-    part='snippet',
+def get_subscription(youtube, channel_id):
+  get_subscription_response = youtube.subscriptions().list(
+    part='subscriberSnippet',
     body=dict(
       snippet=dict(
         resourceId=dict(
@@ -75,7 +75,7 @@ def add_subscription(youtube, channel_id):
       )
     )).execute()
 
-  return add_subscription_response["snippet"]["title"]
+  return get_subscription_response["subscriberSnippet"]["title"]
 
 if __name__ == "__main__":
   argparser.add_argument("--channel-id", help="ID of the channel to subscribe to.",
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
   youtube = get_authenticated_service(args)
   try:
-    channel_title = add_subscription(youtube, args.channel_id)
+    channel_subs = get_subscription(youtube, args.channel_id)
   except HttpError, e:
     print "An HTTP error %d occurred:\n%s" % (e.resp.status, e.content)
   else:
